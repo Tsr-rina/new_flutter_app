@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 
 
 // 一番最初に実行しますよ
-void main(){
+Future<void> main() async{
+  // Firebaseを初期化
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -16,36 +19,47 @@ class MyApp extends StatelessWidget {
   // コンストラクタ→インスタンス生成時に実行される初期化のメソッド
   const MyApp({Key? key}) : super(key: key);
   // コンストラクタにkeyを渡している
-
   @override
+  Widget build(BuildContext context){
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyAuthPage(),
+    );
+  }
+
+
+  // @override
   // StatelessWidgetの性質を引き継いでいる
   // @overrideでその性質を持ったまま上書きをしている
   // メソッドの上書き
-  Widget build(BuildContext context){
-    // 自身のUIの構成情報
-    return  MaterialApp(
-      title: 'Startup Name Generator',
-      // アプリのテーマの変更(色)
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.lightGreen,
-          foregroundColor: Colors.white
-        ),
-      ),
-      home: const RandomWords(),
-      // home: Scaffold(
-      //   // bodyの設定
-      //   appBar:  AppBar(
-      //     // header part
-      //     title: const Text('Startup Name Generator'),
-      //   ),
-      //   body: const Center(
-      //     // like a <p>
-      //     child: RandomWords(),
-      //   ),
-      // ),
-    );
-  }
+  // Widget build(BuildContext context){
+  //   // 自身のUIの構成情報
+  //   return  MaterialApp(
+  //     title: 'Startup Name Generator',
+  //     // アプリのテーマの変更(色)
+  //     theme: ThemeData(
+  //       appBarTheme: const AppBarTheme(
+  //         backgroundColor: Colors.lightGreen,
+  //         foregroundColor: Colors.white
+  //       ),
+  //     ),
+  //     home: const RandomWords(),
+  //     // home: Scaffold(
+  //     //   // bodyの設定
+  //     //   appBar:  AppBar(
+  //     //     // header part
+  //     //     title: const Text('Startup Name Generator'),
+  //     //   ),
+  //     //   body: const Center(
+  //     //     // like a <p>
+  //     //     child: RandomWords(),
+  //     //   ),
+  //     // ),
+  //   );
+  // }
 }
 
 class _RandomWordsState extends State<RandomWords>{
@@ -143,6 +157,79 @@ class _RandomWordsState extends State<RandomWords>{
   }
 }
 
+// 
+class _MyAuthPageState extends State<MyAuthPage>{
+  // 入力されたメールアドレス
+  String newUserEmail = "";
+  // 入力されたパスワード
+  String newUserPassword = "";
+  // 登録・ログインに関する情報を表示
+  String infoText = "";
+
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                // テキストのラベルを設定
+                decoration: const InputDecoration(labelText: "メールアドレス"),
+                onChanged: (String value){
+                  setState(() {
+                    newUserEmail = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "パスワード(6文字以上)"),
+                // パスワードが見えないようにする
+                obscureText: true,
+                onChanged: (String value){
+                  setState(() {
+                    newUserPassword = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () async {
+                  try {
+                    // メール/パスワードでユーザ登録
+                    final FirebaseAuth auth = FirebaseAuth.instance;
+                    final UserCredential result = 
+                        await auth.createUserWithEmailAndPassword(                        
+                          email: newUserEmail,
+                          password: newUserPassword,
+                        );
+                    
+                    // 登録したユーザ情報
+                    final User user = result.user!;
+                    setState(() {
+                      infoText = "登録OK:${user.email}";
+                    });
+                  } catch (e){
+                    // 登録に失敗した場合
+                    setState(() {
+                      infoText = "登録NG:${e.toString()}";
+                    });
+                  }
+                },
+                child: const Text("ユーザ登録"),
+              ),
+              const SizedBox(height: 8),
+              Text(infoText)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // StatefullWidget→動的
 // クラスが2つ必要
 class RandomWords extends StatefulWidget {
@@ -154,4 +241,8 @@ class RandomWords extends StatefulWidget {
 
 }
 
-
+class MyAuthPage extends StatefulWidget{
+  const MyAuthPage({Key? key}): super(key: key);
+  @override
+  _MyAuthPageState createState() => _MyAuthPageState();
+}
