@@ -3,13 +3,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'config/config.dart';
 
 
 // 一番最初に実行しますよ
+final configurations = Configurations();
 Future<void> main() async{
   // Firebaseを初期化
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: configurations.apikey, 
+      appId: configurations.appId, 
+      messagingSenderId: configurations.messagingSenderId, 
+      projectId: configurations.projectId
+    )
+  );
   runApp(const MyApp());
 }
 
