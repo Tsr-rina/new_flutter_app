@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 // import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'config/config.dart';
+import 'firebase_options.dart';
 
 
 // 一番最初に実行しますよ
@@ -12,12 +13,13 @@ Future<void> main() async{
   // Firebaseを初期化
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: configurations.apikey, 
-      appId: configurations.appId, 
-      messagingSenderId: configurations.messagingSenderId, 
-      projectId: configurations.projectId
-    )
+    options: DefaultFirebaseOptions.currentPlatform,
+    // options: FirebaseOptions(
+    //   apiKey: configurations.apikey, 
+    //   appId: configurations.appId, 
+    //   messagingSenderId: configurations.messagingSenderId, 
+    //   projectId: configurations.projectId
+    // )
   );
   runApp(const MyApp());
 }
