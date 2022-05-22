@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:english_words/english_words.dart';
@@ -32,12 +31,14 @@ class MyApp extends StatelessWidget {
   // コンストラクタにkeyを渡している
   @override
   Widget build(BuildContext context){
+    // アプリ全体の管理
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ClothHub',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.lightGreen
       ),
-      home: const MyAuthPage(),
+      // home: const MyAuthPage(),
+      home: const LoginPage(),
     );
   }
 
@@ -174,7 +175,7 @@ class MyAuthPage extends StatefulWidget{
   _MyAuthPageState createState() => _MyAuthPageState();
 }
 
-
+// ユーザ登録画面
 class _MyAuthPageState extends State<MyAuthPage>{
   // 入力されたメールアドレス
   String newUserEmail = "";
@@ -241,6 +242,190 @@ class _MyAuthPageState extends State<MyAuthPage>{
               Text(infoText)
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+// ログイン
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage>{
+  // メッセージ表示
+  String infoText = "";
+  // 入力したメールアドレス・パスワード
+  String email = "";
+  String password = "";
+
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'メールアドレス'),
+                onChanged: (String value){
+                  setState(() {
+                    email = value;
+                  });
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'パスワード'),
+                obscureText: true,
+                onChanged: (String value){
+                  setState(() {
+                    password = value;
+                  });
+                },
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                // メッセージ表示
+                child: Text(infoText),
+              ),
+              Container(
+                width: double.infinity,
+                // ユーザ登録ボタン
+                child: ElevatedButton(
+                  child: const Text("ユーザ登録"),
+                  onPressed: () async {
+                    try {
+                      final FirebaseAuth auth = FirebaseAuth.instance;
+                      final result = await auth.createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      // ユーザ登録に成功したとき
+                      await Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context){
+                          return ChatPage(result.user!);
+                        }),
+                      );
+                    } catch (e) {
+                      // 登録失敗時
+                      setState(() {
+                        infoText = "登録に失敗しました:${e.toString()}";
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                // ログイン登録ボタン
+                child: OutlinedButton(
+                  child: const Text("ログイン"),
+                  onPressed: () async {
+                    try {
+                      // メールとパスワードでログイン
+                      final FirebaseAuth auth = FirebaseAuth.instance;
+                      final result = await auth.signInWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      // ログインに成功した場合
+                      // チャット画面に遷移
+                      await Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context){
+                          return ChatPage(result.user!);
+                        }),
+                      );
+                    } catch (e){
+                      // ログインに失敗した場合
+                      setState(() {
+                        infoText = "ログインに失敗しました${e.toString()}";
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// チャット画面用Widget
+class ChatPage extends StatelessWidget {
+  // 引数からユーザ情報を受け取れるようにする
+  ChatPage(this.user);
+  // ユーザ情報
+  final User user;
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("メニュー画面"),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              // ログアウト処理
+              // 内部で保持しているログイン情報等が初期化される
+              await FirebaseAuth.instance.signOut();
+              // ログイン画面に遷移してチャット画面を破棄
+              await Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context){
+                  return const LoginPage();
+                }),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: const <Widget>[
+          Text("exampleここから選択しましょう"),
+        ],
+      ),
+      // body: Center(
+      //   // ユーザ情報を表示
+      //   child: Text("ログイン情報${user.email}"),
+      // ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () async {
+          // 投稿画面に遷移
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (context){
+              return const AddPostPage();
+            }),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// 投稿画面用Widget
+class AddPostPage extends StatelessWidget {
+  const AddPostPage({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("チャット投稿"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          child: const Text("戻る"),
+          onPressed: () {
+            // 1つ前の画面に戻る
+            Navigator.of(context).pop();
+          },
         ),
       ),
     );
