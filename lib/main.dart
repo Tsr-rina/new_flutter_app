@@ -453,6 +453,9 @@ class MyFirestorePage extends StatefulWidget {
 class _MyFirestorePageState extends State<MyFirestorePage> {
   // 作成したドキュメント一覧
   List<DocumentSnapshot> documentList = [];
+  // 指定したドキュメントの情報
+  String  orderDocumentInfo = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -500,6 +503,44 @@ class _MyFirestorePageState extends State<MyFirestorePage> {
                   subtitle: Text('${document['age']}歳'),
                 );
               }).toList(),
+            ),
+            ElevatedButton(
+              child: const Text("ドキュメントを指定して取得"),
+              onPressed: () async {
+                // コレクションIDをドキュメントIDを指定して取得
+                final document = await FirebaseFirestore.instance
+                .collection('users')
+                .doc('id_abc')
+                .collection('orders')
+                .doc('id_123')
+                .get();
+                setState(() {
+                  orderDocumentInfo = '${document['date']} ${document['price']}円';
+                });
+              },
+            ),
+            // ドキュメントの情報を表示
+            ListTile(title: Text(orderDocumentInfo)),
+            ElevatedButton(
+              child: const Text('ドキュメント更新'),
+              onPressed: () async {
+                // ドキュメント更新
+                await FirebaseFirestore.instance
+                .collection('users')
+                .doc('id_abc')
+                .update({'age': 41});
+              },
+            ),
+            ElevatedButton(
+              child: const Text("ドキュメント削除"),
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                .collection('users')
+                .doc('id_abc')
+                .collection('orders')
+                .doc('id_123')
+                .delete();
+              },
             ),
           ],
         ),
