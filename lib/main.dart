@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: const MyAuthPage(),
       home: const LoginPage(),
+      // home: const MyFirestorePage(),
     );
   }
 
@@ -388,8 +389,57 @@ class ChatPage extends StatelessWidget {
         ],
       ),
       body: Column(
-        children: const <Widget>[
-          Text("exampleここから選択しましょう"),
+        children:[
+          Container(
+            padding: const EdgeInsets.all(8),
+            child: Text("ログイン情報:${user.email}"),
+          ),
+          Expanded(
+            // StreamBuilder
+            // 非同期処理の結果をもとにWidget
+            child: StreamBuilder<QuerySnapshot>(
+              // 投稿メッセージ一覧を取得(非同期処理)
+              // 投稿日時でソート
+              stream: FirebaseFirestore.instance
+              .collection('posts')
+              .orderBy('date')
+              .snapshots(),
+              builder: (context, snapshot) {
+                // データが取得できた場合
+                if (snapshot.hasData) {
+                  final List<DocumentSnapshot> documents = snapshot.data!.docs;
+                  // 取得した投稿メッセージ一覧を元にリスト表示
+                  return ListView(
+                    children: documents.map((document) {
+                      return Card(
+                        child: ListTile(
+                          title: Text(document['text']),
+                          subtitle: Text(document['email']),
+                          // 自分の投稿メッセージの場合は削除ボタンを表示
+                          trailing: document['email'] == user.email?
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () async {
+                              // 投稿メッセージのドキュメントを削除
+                              await FirebaseFirestore.instance
+                              .collection('posts')
+                              .doc(document.id)
+                              .delete();
+                            },
+                          )
+                          :null,
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }
+                // データが読み込み中の場合
+                return const Center(
+                  child: Text("読み込み中..."),
+                );
+              },
+            ),
+          ),
         ],
       ),
       // body: Center(
@@ -402,7 +452,8 @@ class ChatPage extends StatelessWidget {
           // 投稿画面に遷移
           await Navigator.of(context).push(
             MaterialPageRoute(builder: (context){
-              return const AddPostPage();
+              // 引数からユーザ情報を渡す
+              return AddPostPage(user);
             }),
           );
         },
@@ -412,27 +463,75 @@ class ChatPage extends StatelessWidget {
 }
 
 // 投稿画面用Widget
-class AddPostPage extends StatelessWidget {
-  const AddPostPage({Key? key}) : super(key: key);
+class AddPostPage extends StatefulWidget {
+  AddPostPage(this.user);
+  final User user;
+  
   @override
-  Widget build(BuildContext context){
+  _AddPostPageState createState() => _AddPostPageState();
+
+}
+
+class _AddPostPageState extends State<AddPostPage> {
+  // 入力した投稿メッセージ
+  String messageText = '';
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("チャット投稿"),
       ),
       body: Center(
-        child: ElevatedButton(
-          child: const Text("戻る"),
-          onPressed: () {
-            // 1つ前の画面に戻る
-            Navigator.of(context).pop();
-          },
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              // 投稿メッセージ入力
+              TextFormField(
+                decoration:  const InputDecoration(labelText: '投稿メッセージ'),
+                // 複数行のテキスト入力
+                keyboardType: TextInputType.multiline,
+                // 最大3行
+                maxLines: 3,
+                onChanged: (String value){
+                  setState(() {
+                    messageText = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                child: ElevatedButton(
+                  child: const Text("投稿"),
+                  onPressed: () async {
+                    // 現在の日時
+                    final date = DateTime.now().toLocal().toIso8601String();
+                    // AddPostPageのデータを参照
+                    final email = widget.user.email;
+                    // 投稿メッセージ用ドキュメント作成
+                    await FirebaseFirestore.instance
+                    .collection('posts') //コレクションID指定
+                    .doc() //ドキュメントID自動生成
+                    .set({
+                      'text': messageText,
+                      'email': email,
+                      'date': date
+                    });
+                    // 1つ前の画面に戻る
+                    Navigator.of(context).pop();
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
 // StatefullWidget→動的
 // クラスが2つ必要
 // class RandomWords extends StatefulWidget {
