@@ -5,6 +5,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'config/config.dart';
 import 'firebase_options.dart';
+import 'profile.dart';
+import 'browsing.dart';
+import 'repository.dart';
 
 
 // 一番最初に実行しますよ
@@ -39,7 +42,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.lightGreen
       ),
       // home: const MyAuthPage(),
-      home: const LoginPage(),
+      // home: const LoginPage(),
+      home: const ChatPage(),
       // home: const MyFirestorePage(),
     );
   }
@@ -360,107 +364,6 @@ class _LoginPageState extends State<LoginPage>{
   }
 }
 
-// チャット画面用Widget
-class ChatPage extends StatelessWidget {
-  // 引数からユーザ情報を受け取れるようにする
-  ChatPage(this.user);
-  // ユーザ情報
-  final User user;
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("メニュー画面"),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              // ログアウト処理
-              // 内部で保持しているログイン情報等が初期化される
-              await FirebaseAuth.instance.signOut();
-              // ログイン画面に遷移してチャット画面を破棄
-              await Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context){
-                  return const LoginPage();
-                }),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Column(
-        children:[
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: Text("ログイン情報:${user.email}"),
-          ),
-          Expanded(
-            // StreamBuilder
-            // 非同期処理の結果をもとにWidget
-            child: StreamBuilder<QuerySnapshot>(
-              // 投稿メッセージ一覧を取得(非同期処理)
-              // 投稿日時でソート
-              stream: FirebaseFirestore.instance
-              .collection('posts')
-              .orderBy('date')
-              .snapshots(),
-              builder: (context, snapshot) {
-                // データが取得できた場合
-                if (snapshot.hasData) {
-                  final List<DocumentSnapshot> documents = snapshot.data!.docs;
-                  // 取得した投稿メッセージ一覧を元にリスト表示
-                  return ListView(
-                    children: documents.map((document) {
-                      return Card(
-                        child: ListTile(
-                          title: Text(document['text']),
-                          subtitle: Text(document['email']),
-                          // 自分の投稿メッセージの場合は削除ボタンを表示
-                          trailing: document['email'] == user.email?
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () async {
-                              // 投稿メッセージのドキュメントを削除
-                              await FirebaseFirestore.instance
-                              .collection('posts')
-                              .doc(document.id)
-                              .delete();
-                            },
-                          )
-                          :null,
-                        ),
-                      );
-                    }).toList(),
-                  );
-                }
-                // データが読み込み中の場合
-                return const Center(
-                  child: Text("読み込み中..."),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-      // body: Center(
-      //   // ユーザ情報を表示
-      //   child: Text("ログイン情報${user.email}"),
-      // ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () async {
-          // 投稿画面に遷移
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context){
-              // 引数からユーザ情報を渡す
-              return AddPostPage(user);
-            }),
-          );
-        },
-      ),
-    );
-  }
-}
 
 // 投稿画面用Widget
 class AddPostPage extends StatefulWidget {
@@ -542,6 +445,10 @@ class _AddPostPageState extends State<AddPostPage> {
 //   _RandomWordsState createState() => _RandomWordsState();
 
 // }
+
+
+
+
 
 class MyFirestorePage extends StatefulWidget {
   const MyFirestorePage({Key? key}): super(key: key);
