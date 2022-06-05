@@ -42,8 +42,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.lightGreen
       ),
       // home: const MyAuthPage(),
-      // home: const LoginPage(),
-      home: const ChatPage(),
+      home: const LoginPage(),
       // home: const MyFirestorePage(),
     );
   }
@@ -314,7 +313,8 @@ class _LoginPageState extends State<LoginPage>{
                       // ユーザ登録に成功したとき
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
-                          return ChatPage(result.user!);
+                          // return ChatPage(result.user!);
+                          return SelectPage();
                         }),
                       );
                     } catch (e) {
@@ -344,7 +344,8 @@ class _LoginPageState extends State<LoginPage>{
                       // チャット画面に遷移
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
-                          return ChatPage(result.user!);
+                          // return ChatPage(result.user!);
+                          return SelectPage();
                         }),
                       );
                     } catch (e){

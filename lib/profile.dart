@@ -4,6 +4,7 @@ import 'repository.dart';
 
 // ProfileWidget
 class ProfilePage extends StatelessWidget {
+  const ProfilePage({Key? key}) : super(key: key);
   // ProfilePage(this.user);
   // // ユーザ情報
   // final User user;  
