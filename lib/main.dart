@@ -314,7 +314,7 @@ class _LoginPageState extends State<LoginPage>{
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
                           // return ChatPage(result.user!);
-                          return SelectPage();
+                          return SelectPage(result.user!);
                         }),
                       );
                     } catch (e) {
@@ -345,7 +345,7 @@ class _LoginPageState extends State<LoginPage>{
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
                           // return ChatPage(result.user!);
-                          return SelectPage();
+                          return SelectPage(result.user!);
                         }),
                       );
                     } catch (e){
@@ -446,6 +446,45 @@ class _AddPostPageState extends State<AddPostPage> {
 //   _RandomWordsState createState() => _RandomWordsState();
 
 // }
+
+
+class SelectPage extends StatefulWidget {
+  SelectPage(this.user);
+  final User user;
+  @override
+  _SelectPageState createState() => _SelectPageState();
+}
+class _SelectPageState extends State<SelectPage>{
+
+
+  static const _screens = [
+    RepositoryPage(),
+    ProfilePage(),
+    ChatPage(widget.user),
+  ];
+  int _selectedIndex = 0;
+  void _onItemTapped(int index){
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.album), label: "repository"),
+          BottomNavigationBarItem(icon: Icon(Icons.private_connectivity_sharp), label: "profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.picture_in_picture), label: "browsing"),
+        ],
+        type: BottomNavigationBarType.fixed,
+      ),
+    );
+  }
+}
 
 
 
