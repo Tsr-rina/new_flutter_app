@@ -3,24 +3,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:english_words/english_words.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'profile.dart';
-import 'browsing.dart';
 import 'repository.dart';
 
 
-class ChatPage extends StatefulWidget {
-  ChatPage(this.user);
+class Browsing extends StatefulWidget {
+  const Browsing(this.user);
   final User user;
   
   @override
-  _ChatPageState createState() => _ChatPageState();
+  _Browsing createState() => _Browsing();
 
 }
 
 // チャット画面用Widget
-class _ChatPageState extends State <ChatPage> {
+class _Browsing extends State <Browsing> {
   @override
   Widget build(BuildContext context){
     return Scaffold(

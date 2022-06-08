@@ -447,20 +447,17 @@ class _AddPostPageState extends State<AddPostPage> {
 
 // }
 
-
 class SelectPage extends StatefulWidget {
   SelectPage(this.user);
   final User user;
   @override
   _SelectPageState createState() => _SelectPageState();
 }
-class _SelectPageState extends State<SelectPage>{
-
-
-  static const _screens = [
+class _SelectPageState extends State<SelectPage>{  
+   static const  _screens=[
     RepositoryPage(),
     ProfilePage(),
-    ChatPage(widget.user),
+    Browsing()
   ];
   int _selectedIndex = 0;
   void _onItemTapped(int index){
