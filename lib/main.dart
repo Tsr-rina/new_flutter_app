@@ -453,11 +453,11 @@ class SelectPage extends StatefulWidget {
   @override
   _SelectPageState createState() => _SelectPageState();
 }
-class _SelectPageState extends State<SelectPage>{  
-   static const  _screens=[
-    RepositoryPage(),
+class _SelectPageState extends State<SelectPage>{
+
+  static const  _screens=[
     ProfilePage(),
-    Browsing()
+    // Browsing()
   ];
   int _selectedIndex = 0;
   void _onItemTapped(int index){
@@ -473,11 +473,23 @@ class _SelectPageState extends State<SelectPage>{
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.album), label: "repository"),
-          BottomNavigationBarItem(icon: Icon(Icons.private_connectivity_sharp), label: "profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.manage_accounts), label: "profile"),
           BottomNavigationBarItem(icon: Icon(Icons.picture_in_picture), label: "browsing"),
         ],
         type: BottomNavigationBarType.fixed,
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () async {
+          // 投稿画面に遷移
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (context){
+              // 引数からユーザ情報を渡す
+              return AddPostPage(widget.user);
+            }),
+          );
+        },
       ),
     );
   }
