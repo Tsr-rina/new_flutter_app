@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 import 'profile.dart';
 import 'browsing.dart';
 import 'repository.dart';
+import 'home.dart';
 
 
 // 一番最初に実行しますよ
@@ -314,7 +315,7 @@ class _LoginPageState extends State<LoginPage>{
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
                           // return ChatPage(result.user!);
-                          return SelectPage(result.user!);
+                          return HomePage(result.user!);
                         }),
                       );
                     } catch (e) {
@@ -345,7 +346,7 @@ class _LoginPageState extends State<LoginPage>{
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
                           // return ChatPage(result.user!);
-                          return SelectPage(result.user!);
+                          return HomePage(result.user!);
                         }),
                       );
                     } catch (e){
@@ -456,8 +457,9 @@ class SelectPage extends StatefulWidget {
 class _SelectPageState extends State<SelectPage>{
 
   static const  _screens=[
+    // home(),
     ProfilePage(),
-    // Browsing()
+    // Browsing(),
   ];
   int _selectedIndex = 0;
   void _onItemTapped(int index){
@@ -473,7 +475,8 @@ class _SelectPageState extends State<SelectPage>{
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.manage_accounts), label: "profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
+          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "profile"),
           BottomNavigationBarItem(icon: Icon(Icons.picture_in_picture), label: "browsing"),
         ],
         type: BottomNavigationBarType.fixed,
