@@ -1,3 +1,5 @@
+import 'package:new_flutter_app/browsing.dart';
+
 import 'main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -52,14 +54,23 @@ class _HomePageState extends State<HomePage>{
 
                 return Card(
                   child: ListTile(
-                    title: Text(menu_list[0]),
+                    title: Text(menu_list[index]),
                     onTap: (){
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context){
-                          // 引数からユーザ情報を渡す
-                          // if (index==0){
-                          return const ProfilePage();
-                          // }
+
+                          if (index==0){
+                            return ProfilePage(widget.user);
+                          }
+                          else if (index==1){
+                            return AddPostPage(widget.user);
+                          }
+                          else if (index==2){
+                            return RepositoryPage(widget.user);
+                          }
+                          else {
+                            return Browsing(widget.user);
+                          }
                         }),
                       );
                     },
