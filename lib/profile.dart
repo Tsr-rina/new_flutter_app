@@ -1,13 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'browsing.dart';
 import 'repository.dart';
 
 // ProfileWidget
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
-  // ProfilePage(this.user);
-  // // ユーザ情報
-  // final User user;  
+  ProfilePage(this.user);
+  // ユーザ情報
+  final User user; 
   @override
   Widget build(BuildContext context){
     return Scaffold(

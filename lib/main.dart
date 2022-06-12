@@ -458,7 +458,7 @@ class _SelectPageState extends State<SelectPage>{
 
   static const  _screens=[
     // home(),
-    ProfilePage(),
+    // ProfilePage(),
     // Browsing(),
   ];
   int _selectedIndex = 0;

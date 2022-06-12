@@ -54,31 +54,35 @@ class _RepositoryPageState extends State<RepositoryPage>{
                 if (snapshot.hasData) {
                   final List<DocumentSnapshot> documents = snapshot.data!.docs;
                   // 取得した投稿メッセージ一覧を元にリスト表示
+
                   return ListView(
                     children: documents.map((document) {
-                      // if(document['email']==widget.user.email){
-                      //   final j_email = widget.user.email;
-                      //   final j_text = widget.user.email;
-                      // }
-                      return Card(
-                        child: ListTile(
-                          title: Text(document['text']),
-                          subtitle: Text(document['email']),
-                          // 自分の投稿メッセージの場合は削除ボタンを表示
-                          trailing: document['email'] == widget.user.email?
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () async {
-                              // 投稿メッセージのドキュメントを削除
-                              await FirebaseFirestore.instance
-                              .collection('posts')
-                              .doc(document.id)
-                              .delete();
-                            },
-                          )
-                          :null,
-                        ),
-                      );
+                      if(document['email'] == widget.user.email){
+                        return Card(
+                          child: ListTile(
+                            title: Text(document['text']),
+                            subtitle: Text(document['email']),
+                            // 自分の投稿メッセージの場合は削除ボタンを表示
+                            trailing: document['email'] == widget.user.email?
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                // 投稿メッセージのドキュメントを削除
+                                await FirebaseFirestore.instance
+                                .collection('posts')
+                                .doc(document.id)
+                                .delete();
+                              },
+                            )
+                            :null,
+                          ),
+                        );
+                      }
+                      else {
+                        return Card(
+                          child: Text(""),
+                        );
+                      }
                     }).toList(),
                   );
                 }
