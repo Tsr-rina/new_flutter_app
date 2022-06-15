@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'profile.dart';
 import 'repository.dart';
+import 'post.dart';
 
 
 class HomePage extends StatefulWidget {

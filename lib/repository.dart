@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'profile.dart';
 import 'browsing.dart';
 import 'main.dart';
+import 'post.dart';
 
 // リポジトリ用画面
 class RepositoryPage extends StatefulWidget {
