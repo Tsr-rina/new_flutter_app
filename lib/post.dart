@@ -24,12 +24,14 @@ class AddPostPage extends StatefulWidget {
 class _AddPostPageState extends State<AddPostPage> {
   // 入力した投稿メッセージ
   String messageText = '';
+  // 作品名入力
+  String m_name = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("チャット投稿"),
+        title: const Text("投稿する"),
       ),
       body: Center(
         child: Container(
@@ -37,6 +39,18 @@ class _AddPostPageState extends State<AddPostPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              // 作品名入力
+              TextFormField(
+                decoration: const InputDecoration(labelText: "作品名"),
+                keyboardType: TextInputType.multiline,
+                maxLines: 2,
+                onChanged: (String value){
+                  setState(() {
+                    m_name = value;
+                  });
+                },
+              ),
+              
               // 投稿メッセージ入力
               TextFormField(
                 decoration:  const InputDecoration(labelText: '投稿メッセージ'),
@@ -50,7 +64,6 @@ class _AddPostPageState extends State<AddPostPage> {
                   });
                 },
               ),
-              // ここに日付とかその他の入力について書く
               const SizedBox(height: 8),
               Container(
                 width: double.infinity,
@@ -60,15 +73,18 @@ class _AddPostPageState extends State<AddPostPage> {
                     // 現在の日時
                     final date = DateTime.now().toLocal().toIso8601String();
                     // AddPostPageのデータを参照
+                    // ニックネーム
                     final email = widget.user.email;
                     // 投稿メッセージ用ドキュメント作成
                     await FirebaseFirestore.instance
                     .collection('posts') //コレクションID指定
                     .doc() //ドキュメントID自動生成
                     .set({
+                      'user':'',
+                      'date': date,
+                      'm_name': m_name,
                       'text': messageText,
                       'email': email,
-                      'date': date,
                     });
                     // 1つ前の画面に戻る
                     Navigator.of(context).pop();
