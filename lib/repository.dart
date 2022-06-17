@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ class RepositoryPage extends StatefulWidget {
 }
 
 class _RepositoryPageState extends State<RepositoryPage>{
+  String m_name = "";
+  String texts = "";
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -53,9 +57,10 @@ class _RepositoryPageState extends State<RepositoryPage>{
                 if (snapshot.hasData) {
                   final List<DocumentSnapshot> documents = snapshot.data!.docs;
                   // 取得した投稿メッセージ一覧を元にリスト表示
-
                   return ListView(
                     children: documents.map((document) {
+                      m_name = document['m_name'];
+                      texts = document['text'];                     
                       if(document['email'] == widget.user.email){
                         return Card(
                           child: ListTile(
@@ -74,6 +79,13 @@ class _RepositoryPageState extends State<RepositoryPage>{
                               },
                             )
                             : null,
+                            onTap: () async {
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context){
+                                  return DetailPage(m_name);
+                                }),
+                              );
+                            },
                           ),
                         );
                       }
@@ -110,7 +122,18 @@ class _RepositoryPageState extends State<RepositoryPage>{
   }
 }
 
-class DetailPage extends StatelessWidget{
+
+class DetailPage extends StatefulWidget {
+  final String m_name;
+  DetailPage({Key? key, this.m_name}):super(key: key);
+  // DetailPage(this.m_name, this.texts);
+  // final String m_name;
+  // final String texts;
+  @override
+  _DetailPageState createState() => _DetailPageState();
+}
+class _DetailPageState extends State<DetailPage>{
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -118,26 +141,31 @@ class DetailPage extends StatelessWidget{
       appBar: AppBar(
         title: const Text("Detail"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children:<Widget>[
-          Container(
-            child: const Text("m_name"),
-          ),
-          Container(
-            child: const Text("text"),
-          ),
-          Container(
-            width: double.infinity,
-            child: ElevatedButton(
-              child: const Text("戻る"),
-              onPressed: () async {
-                Navigator.of(context).pop();
-              }
-            ),
-          ),
-        ],
-      ),
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:<Widget>[
+              Container(
+                child: const Text(m_name),
+              ),
+              Container(
+                child: const Text("text"),
+              ),
+              Container(
+                width: double.infinity,
+                child: ElevatedButton(
+                  child: const Text("戻る"),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                  }
+                ),
+              ),
+            ],
+          ), 
+        ),
+      )
     );
   }
 }
