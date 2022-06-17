@@ -1,4 +1,5 @@
 import 'package:new_flutter_app/browsing.dart';
+import 'package:new_flutter_app/nickname.dart';
 
 import 'main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,16 +14,17 @@ import 'post.dart';
 
 
 class HomePage extends StatefulWidget {
-
-  const HomePage(this.user);
-  final User user;
+  const HomePage(this.nickname);
+  final User nickname;
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 class _HomePageState extends State<HomePage>{
+    
 
   final menu_list = ["Profile", "Post", "Repository", "Browsing"];
+
 
   @override
   Widget build(BuildContext context){
@@ -61,16 +63,16 @@ class _HomePageState extends State<HomePage>{
                         MaterialPageRoute(builder: (context){
 
                           if (index==0){
-                            return ProfilePage(widget.user);
+                            return ProfilePage(widget.nickname);
                           }
                           else if (index==1){
-                            return AddPostPage(widget.user);
+                            return AddPostPage(widget.nickname);
                           }
                           else if (index==2){
-                            return RepositoryPage(widget.user);
+                            return RepositoryPage(widget.nickname);
                           }
                           else {
-                            return Browsing(widget.user);
+                            return Browsing(widget.nickname);
                           }
                         }),
                       );

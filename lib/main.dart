@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:new_flutter_app/myauth.dart';
 import 'config/config.dart';
 import 'firebase_options.dart';
 import 'profile.dart';
@@ -175,84 +176,6 @@ class MyApp extends StatelessWidget {
 //   }
 // }
 
-class MyAuthPage extends StatefulWidget{
-  const MyAuthPage({Key? key}): super(key: key);
-  @override
-  _MyAuthPageState createState() => _MyAuthPageState();
-}
-
-// ユーザ登録画面
-class _MyAuthPageState extends State<MyAuthPage>{
-  // 入力されたメールアドレス
-  String newUserEmail = "";
-  // 入力されたパスワード
-  String newUserPassword = "";
-  // 登録・ログインに関する情報を表示
-  String infoText = "";
-
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                // テキストのラベルを設定
-                decoration: const InputDecoration(labelText: "メールアドレス"),
-                onChanged: (String value){
-                  setState(() {
-                    newUserEmail = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                decoration: const InputDecoration(labelText: "パスワード(6文字以上)"),
-                // パスワードが見えないようにする
-                obscureText: true,
-                onChanged: (String value){
-                  setState(() {
-                    newUserPassword = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () async {
-                  try {
-                    // メール/パスワードでユーザ登録
-                    final FirebaseAuth auth = FirebaseAuth.instance;
-                    final UserCredential result = 
-                        await auth.createUserWithEmailAndPassword(                        
-                          email: newUserEmail,
-                          password: newUserPassword,
-                        );
-                    
-                    // 登録したユーザ情報
-                    final User user = result.user!;
-                    setState(() {
-                      infoText = "登録OK:${user.email}";
-                    });
-                  } catch (e){
-                    // 登録に失敗した場合
-                    setState(() {
-                      infoText = "登録NG:${e.toString()}";
-                    });
-                  }
-                },
-                child: const Text("ユーザ登録"),
-              ),
-              const SizedBox(height: 8),
-              Text(infoText)
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 // ログイン
 class LoginPage extends StatefulWidget {
@@ -267,6 +190,7 @@ class _LoginPageState extends State<LoginPage>{
   // 入力したメールアドレス・パスワード
   String email = "";
   String password = "";
+  String nname = "";
 
   @override
   Widget build(BuildContext context){
@@ -299,34 +223,6 @@ class _LoginPageState extends State<LoginPage>{
                 // メッセージ表示
                 child: Text(infoText),
               ),
-              Container(
-                width: double.infinity,
-                // ユーザ登録ボタン
-                child: ElevatedButton(
-                  child: const Text("ユーザ登録"),
-                  onPressed: () async {
-                    try {
-                      final FirebaseAuth auth = FirebaseAuth.instance;
-                      final result = await auth.createUserWithEmailAndPassword(
-                        email: email,
-                        password: password,
-                      );
-                      // ユーザ登録に成功したとき
-                      await Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context){
-                          // return ChatPage(result.user!);
-                          return HomePage(result.user!);
-                        }),
-                      );
-                    } catch (e) {
-                      // 登録失敗時
-                      setState(() {
-                        infoText = "登録に失敗しました:${e.toString()}";
-                      });
-                    }
-                  },
-                ),
-              ),
               const SizedBox(height: 8),
               Container(
                 width: double.infinity,
@@ -342,11 +238,18 @@ class _LoginPageState extends State<LoginPage>{
                         password: password,
                       );
                       // ログインに成功した場合
-                      // チャット画面に遷移
+                      // ホーム画面に遷移
+                      final document = await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(email)
+                      .get();
+                      setState(() {
+                        nname = '${document['date']} ${document['price']}円';
+                      });
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
                           // return ChatPage(result.user!);
-                          return HomePage(result.user!);
+                          return HomePage(nname);
                         }),
                       );
                     } catch (e){
@@ -355,6 +258,21 @@ class _LoginPageState extends State<LoginPage>{
                         infoText = "ログインに失敗しました${e.toString()}";
                       });
                     }
+                  },
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                // ユーザ登録ボタン
+                child: ElevatedButton(
+                  child: const Text("新規登録"),
+                  onPressed: () async{
+                    await Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context){
+                        // return ChatPage(result.user!);
+                        return MyAuthPage();
+                      }),
+                    );
                   },
                 ),
               ),
