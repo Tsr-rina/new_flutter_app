@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'profile.dart';
-import 'browsing.dart';
 import 'main.dart';
 import 'post.dart';
 
@@ -47,8 +44,9 @@ class _RepositoryPageState extends State<RepositoryPage>{
               // 投稿メッセージ一覧を取得(非同期処理)
               // 投稿日時でソート
               stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(widget.user.email)
               .collection('posts')
-              .orderBy('date')
               .snapshots(),
               builder: (context, snapshot) {
                 // データが取得できた場合
@@ -61,12 +59,12 @@ class _RepositoryPageState extends State<RepositoryPage>{
                       if(document['email'] == widget.user.email){
                         return Card(
                           child: ListTile(
-                            title: Text(document['text']),
-                            subtitle: Text(document['email']),
+                            title: Text(document['m_name']),
+                            subtitle: Text(document['user']),
                             // 自分の投稿メッセージの場合は削除ボタンを表示
                             trailing: document['email'] == widget.user.email?
                             IconButton(
-                              icon: Icon(Icons.delete),
+                              icon: const Icon(Icons.delete),
                               onPressed: () async {
                                 // 投稿メッセージのドキュメントを削除
                                 await FirebaseFirestore.instance
@@ -75,13 +73,13 @@ class _RepositoryPageState extends State<RepositoryPage>{
                                 .delete();
                               },
                             )
-                            :null,
+                            : null,
                           ),
                         );
                       }
                       else {
-                        return Card(
-                          child: Text(""),
+                        return const Card(
+                          child: const Text(""),
                         );
                       }
                     }).toList(),
@@ -107,6 +105,38 @@ class _RepositoryPageState extends State<RepositoryPage>{
             }),
           );
         },
+      ),
+    );
+  }
+}
+
+class DetailPage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Detail"),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children:<Widget>[
+          Container(
+            child: const Text("m_name"),
+          ),
+          Container(
+            child: const Text("text"),
+          ),
+          Container(
+            width: double.infinity,
+            child: ElevatedButton(
+              child: const Text("戻る"),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              }
+            ),
+          ),
+        ],
       ),
     );
   }

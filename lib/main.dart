@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:new_flutter_app/myauth.dart';
 import 'config/config.dart';
 import 'firebase_options.dart';
-import 'profile.dart';
-import 'browsing.dart';
-import 'repository.dart';
+// import 'profile.dart';
+// import 'browsing.dart';
+// import 'repository.dart';
 import 'home.dart';
 import 'post.dart';
 
@@ -239,17 +239,10 @@ class _LoginPageState extends State<LoginPage>{
                       );
                       // ログインに成功した場合
                       // ホーム画面に遷移
-                      final document = await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(email)
-                      .get();
-                      setState(() {
-                        nname = '${document['date']} ${document['price']}円';
-                      });
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
                           // return ChatPage(result.user!);
-                          return HomePage(nname);
+                          return HomePage(result.user!);
                         }),
                       );
                     } catch (e){

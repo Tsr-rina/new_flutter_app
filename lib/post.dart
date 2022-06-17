@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 // import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'config/config.dart';
-import 'firebase_options.dart';
-import 'profile.dart';
-import 'browsing.dart';
+// import 'config/config.dart';
+// import 'firebase_options.dart';
+// import 'profile.dart';
+// import 'browsing.dart';
 import 'repository.dart';
-import 'home.dart';
+// import 'home.dart';
 
 
 // 投稿画面用Widget
@@ -26,6 +26,8 @@ class _AddPostPageState extends State<AddPostPage> {
   String messageText = '';
   // 作品名入力
   String m_name = "";
+  // ニックネーム
+  String nickname = "";
 
   @override
   Widget build(BuildContext context) {
@@ -75,19 +77,42 @@ class _AddPostPageState extends State<AddPostPage> {
                     // AddPostPageのデータを参照
                     // ニックネーム
                     final email = widget.user.email;
+                    final document = await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(email)
+                    .get();
+                    setState(() {
+                      nickname = '${document['nickname']}';
+                    });
                     // 投稿メッセージ用ドキュメント作成
                     await FirebaseFirestore.instance
-                    .collection('posts') //コレクションID指定
-                    .doc() //ドキュメントID自動生成
+                    .collection('users') //コレクションID指定
+                    .doc(email) //ドキュメントIDを指定
+                    .collection('posts')
+                    .doc(date)
                     .set({
-                      'user':'',
+                      'user': nickname,
+                      'email':email,
                       'date': date,
                       'm_name': m_name,
                       'text': messageText,
-                      'email': email,
                     });
+                    final snackBar = SnackBar(
+                      content: const Text("投稿しました"),
+                      action: SnackBarAction(
+                        label: "undo",
+                        onPressed: () async{
+                          await Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context){
+                              return RepositoryPage(widget.user);
+                            }),
+                          );
+                        },
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     // 1つ前の画面に戻る
-                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop();
                   },
                 ),
               )

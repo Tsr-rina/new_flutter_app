@@ -1,21 +1,21 @@
 import 'package:new_flutter_app/browsing.dart';
-import 'package:new_flutter_app/nickname.dart';
+// import 'package:new_flutter_app/nickname.dart';
 
 import 'main.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 // import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'firebase_options.dart';
+// import 'firebase_options.dart';
 import 'profile.dart';
 import 'repository.dart';
 import 'post.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage(this.nickname);
-  final User nickname;
+  const HomePage(this.user);
+  final User user;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -63,16 +63,16 @@ class _HomePageState extends State<HomePage>{
                         MaterialPageRoute(builder: (context){
 
                           if (index==0){
-                            return ProfilePage(widget.nickname);
+                            return ProfilePage(widget.user);
                           }
                           else if (index==1){
-                            return AddPostPage(widget.nickname);
+                            return AddPostPage(widget.user);
                           }
                           else if (index==2){
-                            return RepositoryPage(widget.nickname);
+                            return RepositoryPage(widget.user);
                           }
                           else {
-                            return Browsing(widget.nickname);
+                            return Browsing(widget.user);
                           }
                         }),
                       );
