@@ -1,12 +1,12 @@
 import 'main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 // import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'firebase_options.dart';
-import 'profile.dart';
-import 'repository.dart';
+// import 'firebase_options.dart';
+// import 'profile.dart';
+// import 'repository.dart';
 import 'post.dart';
 
 
@@ -73,7 +73,7 @@ class _Browsing extends State <Browsing> {
                           // 自分の投稿メッセージの場合は削除ボタンを表示
                           trailing: document['email'] == widget.user.email?
                           IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             onPressed: () async {
                               // 投稿メッセージのドキュメントを削除
                               await FirebaseFirestore.instance

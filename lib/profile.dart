@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'browsing.dart';
-import 'repository.dart';
 
 // ProfileWidget
 class ProfilePage extends StatelessWidget {
