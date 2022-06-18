@@ -1,8 +1,7 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'main.dart';
 import 'post.dart';
 
@@ -48,8 +47,6 @@ class _RepositoryPageState extends State<RepositoryPage>{
               // 投稿メッセージ一覧を取得(非同期処理)
               // 投稿日時でソート
               stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(widget.user.email)
               .collection('posts')
               .snapshots(),
               builder: (context, snapshot) {
@@ -58,10 +55,10 @@ class _RepositoryPageState extends State<RepositoryPage>{
                   final List<DocumentSnapshot> documents = snapshot.data!.docs;
                   // 取得した投稿メッセージ一覧を元にリスト表示
                   return ListView(
-                    children: documents.map((document) {
-                      m_name = document['m_name'];
-                      texts = document['text'];                     
-                      if(document['email'] == widget.user.email){
+                    children: documents.map((document) {                  
+                      if(document == widget.user.email){
+                        m_name = document['m_name'];
+                        texts = document['text'];   
                         return Card(
                           child: ListTile(
                             title: Text(document['m_name']),
@@ -82,7 +79,7 @@ class _RepositoryPageState extends State<RepositoryPage>{
                             onTap: () async {
                               await Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context){
-                                  return DetailPage(m_name);
+                                  return DetailPage(m_name,texts);
                                 }),
                               );
                             },
@@ -90,9 +87,7 @@ class _RepositoryPageState extends State<RepositoryPage>{
                         );
                       }
                       else {
-                        return const Card(
-                          child: const Text(""),
-                        );
+                        return const Text("");
                       }
                     }).toList(),
                   );
@@ -124,8 +119,9 @@ class _RepositoryPageState extends State<RepositoryPage>{
 
 
 class DetailPage extends StatefulWidget {
+  DetailPage(this.m_name, this.texts);
   final String m_name;
-  DetailPage({Key? key, this.m_name}):super(key: key);
+  final String texts;
   // DetailPage(this.m_name, this.texts);
   // final String m_name;
   // final String texts;
@@ -145,13 +141,32 @@ class _DetailPageState extends State<DetailPage>{
         child: Container(
           padding: const EdgeInsets.all(32),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children:<Widget>[
+              // 作品名
               Container(
-                child: const Text(m_name),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.m_name,
+                  style: const TextStyle(
+                    decoration: TextDecoration.underline,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25
+                  ),
+                ),
               ),
+              // テキスト
+              
               Container(
-                child: const Text("text"),
+                margin: const EdgeInsets.only(top:20),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.texts,
+                  style: const TextStyle(
+                    fontSize: 18
+                  ),
+                ),
+                
               ),
               Container(
                 width: double.infinity,

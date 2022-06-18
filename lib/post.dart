@@ -86,10 +86,8 @@ class _AddPostPageState extends State<AddPostPage> {
                     });
                     // 投稿メッセージ用ドキュメント作成
                     await FirebaseFirestore.instance
-                    .collection('users') //コレクションID指定
+                    .collection('posts') //コレクションID指定
                     .doc(email) //ドキュメントIDを指定
-                    .collection('posts')
-                    .doc(date)
                     .set({
                       'user': nickname,
                       'email':email,

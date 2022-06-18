@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import 'firebase_options.dart';
 // import 'profile.dart';
-// import 'repository.dart';
+import 'repository.dart';
 import 'post.dart';
 
 
@@ -19,8 +19,10 @@ class Browsing extends StatefulWidget {
 
 }
 
-// チャット画面用Widget
+// 他の人のリポジトリ閲覧画面用Widget
 class _Browsing extends State <Browsing> {
+  String m_name = "";
+  String texts = "";
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -45,10 +47,6 @@ class _Browsing extends State <Browsing> {
       ),
       body: Column(
         children:[
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: Text("ログイン情報:${widget.user.email}"),
-          ),
           Expanded(
             // StreamBuilder
             // 非同期処理の結果をもとにWidget
@@ -57,7 +55,6 @@ class _Browsing extends State <Browsing> {
               // 投稿日時でソート
               stream: FirebaseFirestore.instance
               .collection('posts')
-              .orderBy('date')
               .snapshots(),
               builder: (context, snapshot) {
                 // データが取得できた場合
@@ -66,25 +63,26 @@ class _Browsing extends State <Browsing> {
                   // 取得した投稿メッセージ一覧を元にリスト表示
                   return ListView(
                     children: documents.map((document) {
-                      return Card(
-                        child: ListTile(
-                          title: Text(document['text']),
-                          subtitle: Text(document['email']),
-                          // 自分の投稿メッセージの場合は削除ボタンを表示
-                          trailing: document['email'] == widget.user.email?
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () async {
-                              // 投稿メッセージのドキュメントを削除
-                              await FirebaseFirestore.instance
-                              .collection('posts')
-                              .doc(document.id)
-                              .delete();
+                      if(document != widget.user.email){
+                        return Card(
+                          child: ListTile(
+                            title: Text(document['m_name']),
+                            subtitle: Text(document['user']),
+                            onTap: () async {
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context){
+                                  return DetailPage(m_name,texts);
+                                }),
+                              );
                             },
-                          )
-                          :null,
-                        ),
-                      );
+                          ),
+                        );
+                      }
+                      else {
+                        return const Card(
+                          child: const Text(""),
+                        );
+                      }
                     }).toList(),
                   );
                 }
