@@ -56,9 +56,9 @@ class _RepositoryPageState extends State<RepositoryPage>{
                   // 取得した投稿メッセージ一覧を元にリスト表示
                   return ListView(
                     children: documents.map((document) {                  
-                      if(document == widget.user.email){
+                      if(document.id == widget.user.email){
                         m_name = document['m_name'];
-                        texts = document['text'];   
+                        texts = document['text'];  
                         return Card(
                           child: ListTile(
                             title: Text(document['m_name']),

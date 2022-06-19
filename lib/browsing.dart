@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 // import 'profile.dart';
 import 'repository.dart';
 import 'post.dart';
+import 'goodsave.dart';
 
 
 class Browsing extends StatefulWidget {
@@ -23,6 +24,7 @@ class Browsing extends StatefulWidget {
 class _Browsing extends State <Browsing> {
   String m_name = "";
   String texts = "";
+  String mail = "";
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -63,14 +65,26 @@ class _Browsing extends State <Browsing> {
                   // 取得した投稿メッセージ一覧を元にリスト表示
                   return ListView(
                     children: documents.map((document) {
-                      if(document != widget.user.email){
+                      if(document.id!= widget.user.email){
+                        // ここに↓いれるとDetailPageに意図した値が届かない
+                        // m_name = document['m_name'];
+                        // texts = document['text']; 
                         return Card(
                           child: ListTile(
                             title: Text(document['m_name']),
                             subtitle: Text(document['user']),
+                            trailing: IconButton(
+                              icon: Icon(Icons.favorite),
+                              onPressed: (){
+                                // GoodSave(widget.user);
+                                Colors.red;
+                              },
+                              ),
                             onTap: () async {
                               await Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context){
+                                  m_name = document["m_name"];
+                                  texts = document["text"];
                                   return DetailPage(m_name,texts);
                                 }),
                               );
@@ -79,9 +93,7 @@ class _Browsing extends State <Browsing> {
                         );
                       }
                       else {
-                        return const Card(
-                          child: const Text(""),
-                        );
+                        return const Text("");
                       }
                     }).toList(),
                   );
