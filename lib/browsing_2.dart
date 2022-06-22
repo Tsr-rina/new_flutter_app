@@ -1,3 +1,7 @@
+import 'dart:html';
+
+import 'package:english_words/english_words.dart';
+
 import 'main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,6 +26,9 @@ class Browsing extends StatefulWidget {
 
 // 他の人のリポジトリ閲覧画面用Widget
 class _Browsing extends State <Browsing> {
+  final _suggestions = [];
+  final _saved = {};
+  final _biggerFont = const TextStyle(fontSize: 18);
   String m_name = "";
   String texts = "";
   String mail = "";
@@ -59,44 +66,44 @@ class _Browsing extends State <Browsing> {
               .collection('posts')
               .snapshots(),
               builder: (context, snapshot) {
+
                 // データが取得できた場合
                 if (snapshot.hasData) {
                   final List<DocumentSnapshot> documents = snapshot.data!.docs;
                   // 取得した投稿メッセージ一覧を元にリスト表示
-                  return ListView(
-                    children: documents.map((document) {
-                      if(document.id!= widget.user.email){
-                        // ここに↓いれるとDetailPageに意図した値が届かない
-                        // m_name = document['m_name'];
-                        // texts = document['text'];
+
+                    for (int i=0; i<documents.length; i++){
+
+                      if(documents[i].id!= widget.user.email){
+                        if (i.isOdd) return const Divider();
+                        final index = i ~/ 2;
+                        if (index >= _suggestions.length){
+                          _suggestions.addAll(generateWordPairs());
+                        }
+                        final alreadySaved = _saved.containsKey(index);
+
                         return Card(
                           child: ListTile(
-                            title: Text(document['m_name']),
-                            subtitle: Text(document['user']),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.star),
-                              onPressed: (){
-                                // GoodSave(widget.user);
-                                Colors.yellow;
-                              },
+                            trailing: Icon(
+                              alreadySaved ? Icons.star : Icons.star_border,
+                              color: alreadySaved ? Colors.yellow[600] : null,
+                              semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
                             ),
-                            onTap: () async {
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context){
-                                  m_name = document["m_name"];
-                                  texts = document["text"];
-                                  return DetailPage(m_name,texts);
-                                }),
-                              );
+                            onTap: (){
+                              setState(() {
+                                if (alreadySaved){
+                                  _saved.remove(_suggestions[index]);
+                                } else {
+                                  _saved.addAll(_suggestions[index]);
+                                }
+                              });
                             },
                           ),
                         );
                       }
-                      else {
-                        return const Text("");
-                      }
-                    }).toList(),
-                  );
+                    }
+
+              
                 }
                 // データが読み込み中の場合
                 return const Center(
