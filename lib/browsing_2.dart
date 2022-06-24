@@ -1,7 +1,5 @@
 import 'dart:html';
 
-import 'package:english_words/english_words.dart';
-
 import 'main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,7 +24,6 @@ class Browsing extends StatefulWidget {
 
 // 他の人のリポジトリ閲覧画面用Widget
 class _Browsing extends State <Browsing> {
-  final _suggestions = [];
   final _saved = {};
   final _biggerFont = const TextStyle(fontSize: 18);
   String m_name = "";
@@ -70,40 +67,56 @@ class _Browsing extends State <Browsing> {
                 // データが取得できた場合
                 if (snapshot.hasData) {
                   final List<DocumentSnapshot> documents = snapshot.data!.docs;
+                  final favorite = FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(widget.user.email)
+                  .collection('favorite')
+                  .doc();
+
+                  for (int i=0; i<documents.length; i++){
+                    _saved[favorite[i]['m_name']] = 0;
+                  }
                   // 取得した投稿メッセージ一覧を元にリスト表示
+                  return ListView(
+                    children: documents.map((document) {
+                      if(document.id!= widget.user.email){
+                        // ここに↓いれるとDetailPageに意図した値が届かない
+                        // m_name = document['m_name'];
+                        // texts = document['text'];
 
-                    for (int i=0; i<documents.length; i++){
-
-                      if(documents[i].id!= widget.user.email){
-                        if (i.isOdd) return const Divider();
-                        final index = i ~/ 2;
-                        if (index >= _suggestions.length){
-                          _suggestions.addAll(generateWordPairs());
-                        }
-                        final alreadySaved = _saved.containsKey(index);
-
+                        
                         return Card(
                           child: ListTile(
-                            trailing: Icon(
-                              alreadySaved ? Icons.star : Icons.star_border,
-                              color: alreadySaved ? Colors.yellow[600] : null,
-                              semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+                            title: Text(document['m_name']),
+                            subtitle: Text(document['user']),
+                            trailing: IconButton(
+                              icon: const Icon(
+                                _saved ? Icons.star : Icons.star_border,
+                                color: _saved ? Colors.yellow[600]: null,
+                                semanticLabel: _saved ? 'Remove from saved': 'save',
+                                ),
+                              onPressed: (){
+                                // GoodSave(widget.user);
+                              },
                             ),
-                            onTap: (){
-                              setState(() {
-                                if (alreadySaved){
-                                  _saved.remove(_suggestions[index]);
-                                } else {
-                                  _saved.addAll(_suggestions[index]);
-                                }
-                              });
+                            onTap: () async {
+
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context){
+                                  m_name = document["m_name"];
+                                  texts = document["text"];
+                                  return DetailPage(m_name,texts);
+                                }),
+                              );
                             },
                           ),
                         );
                       }
-                    }
-
-              
+                      else {
+                        return const Text("");
+                      }
+                    }).toList(),
+                  );                  
                 }
                 // データが読み込み中の場合
                 return const Center(
