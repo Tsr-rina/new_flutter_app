@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'profile.dart';
 import 'repository.dart';
 import 'post.dart';
+import 'browsing_2.dart';
 
 
 class HomePage extends StatefulWidget {
