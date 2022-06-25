@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,11 +22,13 @@ class Browsing extends StatefulWidget {
 
 // 他の人のリポジトリ閲覧画面用Widget
 class _Browsing extends State <Browsing> {
+  List <DocumentSnapshot> documentLists = [];
   final _saved = {};
   final _biggerFont = const TextStyle(fontSize: 18);
   String m_name = "";
   String texts = "";
   String mail = "";
+  bool judge = true;
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -67,15 +67,19 @@ class _Browsing extends State <Browsing> {
                 // データが取得できた場合
                 if (snapshot.hasData) {
                   final List<DocumentSnapshot> documents = snapshot.data!.docs;
-                  final favorite = FirebaseFirestore.instance
+
+
+
+                  final f_document = FirebaseFirestore.instance
                   .collection('users')
                   .doc(widget.user.email)
                   .collection('favorite')
-                  .doc();
-
-                  for (int i=0; i<documents.length; i++){
-                    _saved[favorite[i]['m_name']] = 0;
-                  }
+                  .snapshots().listen((QuerySnapshot snapshot) {
+                    snapshot.docs.forEach((doc) {
+                      // print(doc.get("m_name"));
+                      _saved[doc.get("m_name")] = 0;
+                    });
+                  });
                   // 取得した投稿メッセージ一覧を元にリスト表示
                   return ListView(
                     children: documents.map((document) {
@@ -83,20 +87,24 @@ class _Browsing extends State <Browsing> {
                         // ここに↓いれるとDetailPageに意図した値が届かない
                         // m_name = document['m_name'];
                         // texts = document['text'];
-
-                        
+                        if (_saved[document['m_name']]%2 == 0){
+                          judge = true;
+                        }else{
+                          judge = false;
+                        }
                         return Card(
                           child: ListTile(
                             title: Text(document['m_name']),
                             subtitle: Text(document['user']),
                             trailing: IconButton(
-                              icon: const Icon(
-                                _saved ? Icons.star : Icons.star_border,
-                                color: _saved ? Colors.yellow[600]: null,
-                                semanticLabel: _saved ? 'Remove from saved': 'save',
+                              icon: Icon(
+                                judge ? Icons.star : Icons.star_border,
+                                color: judge ? Colors.yellow[600]: null,
+                                semanticLabel: judge ? 'Remove from saved': 'save',
                                 ),
                               onPressed: (){
                                 // GoodSave(widget.user);
+                                _saved[document['m_name']] += 1;
                               },
                             ),
                             onTap: () async {
@@ -145,4 +153,16 @@ class _Browsing extends State <Browsing> {
       ),
     );
   }
+}
+
+insert_jisyo(email) {
+  final document = FirebaseFirestore.instance
+  .collection('users')
+  .doc(email)
+  .collection('favorite')
+  .snapshots().listen((QuerySnapshot snapshot) {
+    snapshot.docs.forEach((doc) {
+      print(doc.get("m_name"));
+    });
+  });
 }
