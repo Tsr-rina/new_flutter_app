@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 // import 'profile.dart';
 import 'repository.dart';
 import 'post.dart';
-import 'goodsave.dart';
 
 
 class Browsing extends StatefulWidget {
@@ -24,11 +23,11 @@ class Browsing extends StatefulWidget {
 class _Browsing extends State <Browsing> {
   List <DocumentSnapshot> documentLists = [];
   final _saved = {};
-  final _biggerFont = const TextStyle(fontSize: 18);
   String m_name = "";
   String texts = "";
   String mail = "";
-  bool judge = true;
+  // bool judge = true;
+  bool star=false;
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -70,16 +69,16 @@ class _Browsing extends State <Browsing> {
 
 
 
-                  final f_document = FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(widget.user.email)
-                  .collection('favorite')
-                  .snapshots().listen((QuerySnapshot snapshot) {
-                    snapshot.docs.forEach((doc) {
-                      // print(doc.get("m_name"));
-                      _saved[doc.get("m_name")] = 0;
-                    });
-                  });
+                  // final f_document = FirebaseFirestore.instance
+                  // .collection('users')
+                  // .doc(widget.user.email)
+                  // .collection('favorite')
+                  // .snapshots().listen((QuerySnapshot snapshot) {
+                  //   snapshot.docs.forEach((doc) {
+                  //     _saved[doc.get("m_name")] = 0;
+                  //     print(_saved);
+                  //   });
+                  // });
                   // 取得した投稿メッセージ一覧を元にリスト表示
                   return ListView(
                     children: documents.map((document) {
@@ -87,24 +86,35 @@ class _Browsing extends State <Browsing> {
                         // ここに↓いれるとDetailPageに意図した値が届かない
                         // m_name = document['m_name'];
                         // texts = document['text'];
-                        if (_saved[document['m_name']]%2 == 0){
-                          judge = true;
-                        }else{
-                          judge = false;
-                        }
+                        // print(_saved[document["m_name"]]);
+                        // int fig = _saved[document['m_name']];
+                        // if (fig %2 == 0){
+                        //   judge = true;
+                        // }else{
+                        //   judge = false;
+                        // }
                         return Card(
                           child: ListTile(
                             title: Text(document['m_name']),
                             subtitle: Text(document['user']),
                             trailing: IconButton(
                               icon: Icon(
-                                judge ? Icons.star : Icons.star_border,
-                                color: judge ? Colors.yellow[600]: null,
-                                semanticLabel: judge ? 'Remove from saved': 'save',
+                                star == true ? Icons.star : Icons.star_border,
+                                color: star == true ? Colors.yellow[600]: Colors.black45,
+                                // judge ? Icons.star : Icons.star_border,
+                                // color: judge ? Colors.yellow[600]: null,
+                                // semanticLabel: judge ? 'Remove from saved': 'save',
                                 ),
                               onPressed: (){
                                 // GoodSave(widget.user);
-                                _saved[document['m_name']] += 1;
+                                // _saved[document['m_name']] += 1;
+                                setState(() {
+                                  if (star != true){
+                                    star = true;
+                                  } else {
+                                    star = false;
+                                  }
+                                });
                               },
                             ),
                             onTap: () async {
