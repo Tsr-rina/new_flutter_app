@@ -1,4 +1,5 @@
 import 'package:new_flutter_app/browsing.dart';
+import 'package:new_flutter_app/goodsave.dart';
 // import 'package:new_flutter_app/nickname.dart';
 
 import 'main.dart';
@@ -12,6 +13,7 @@ import 'profile.dart';
 import 'repository.dart';
 import 'post.dart';
 import 'browsing_2.dart';
+import 'goodsave.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -24,7 +26,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>{
     
 
-  final menu_list = ["Profile", "Post", "Repository", "Browsing"];
+  final menu_list = ["Star","Post", "Repository", "Browsing"];
 
 
   @override
@@ -53,7 +55,7 @@ class _HomePageState extends State<HomePage>{
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: 4,
+              itemCount: menu_list.length,
               itemBuilder: (BuildContext, int index){
 
                 return Card(
@@ -64,7 +66,7 @@ class _HomePageState extends State<HomePage>{
                         MaterialPageRoute(builder: (context){
 
                           if (index==0){
-                            return ProfilePage(widget.user);
+                            return GoodSave(widget.user);
                           }
                           else if (index==1){
                             return AddPostPage(widget.user);
@@ -72,9 +74,10 @@ class _HomePageState extends State<HomePage>{
                           else if (index==2){
                             return RepositoryPage(widget.user);
                           }
-                          else {
+                          else{
                             return Browsing(widget.user);
                           }
+
                         }),
                       );
                     },

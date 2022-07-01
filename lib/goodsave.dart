@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // import 'profile.dart';
 import 'browsing.dart';
 import 'repository.dart';
+import 'browsing_2.dart';
 // import 'home.dart';
 import 'main.dart';
 
@@ -76,13 +77,13 @@ class _GoodSave extends State <GoodSave> {
                           child: ListTile(
                             title: Text(document['m_name']),
                             subtitle: Text(document['user']),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.star),
-                              onPressed: (){
-                                // GoodSave(widget.user);
-                                Colors.yellow;
-                              },
-                            ),
+                            // trailing: IconButton(
+                            //   icon: const Icon(Icons.star),
+                            //   onPressed: (){
+                            //     // GoodSave(widget.user);
+                            //     Colors.yellow;
+                            //   },
+                            // ),
                             onTap: () async {
                               await Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context){
