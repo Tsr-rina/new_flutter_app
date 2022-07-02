@@ -7,10 +7,12 @@ import 'package:new_flutter_app/myauth.dart';
 import 'config/config.dart';
 import 'firebase_options.dart';
 // import 'profile.dart';
-// import 'browsing.dart';
+import 'browsing_2.dart';
 // import 'repository.dart';
 import 'home.dart';
 import 'post.dart';
+
+
 
 // 一番最初に実行しますよ
 final configurations = Configurations();
@@ -263,7 +265,7 @@ class _LoginPageState extends State<LoginPage>{
                     await Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context){
                         // return ChatPage(result.user!);
-                        return MyAuthPage();
+                        return const MyAuthPage();
                       }),
                     );
                   },
@@ -298,10 +300,11 @@ class SelectPage extends StatefulWidget {
 }
 class _SelectPageState extends State<SelectPage>{
 
+
+
   static const  _screens=[
-    // home(),
-    // ProfilePage(),
-    // Browsing(),
+    // HomePage(widget.user),
+    // Browsing(widget.user),
   ];
   int _selectedIndex = 0;
   void _onItemTapped(int index){
@@ -311,6 +314,7 @@ class _SelectPageState extends State<SelectPage>{
   }
   @override
   Widget build(BuildContext context){
+
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -318,7 +322,6 @@ class _SelectPageState extends State<SelectPage>{
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "profile"),
           BottomNavigationBarItem(icon: Icon(Icons.picture_in_picture), label: "browsing"),
         ],
         type: BottomNavigationBarType.fixed,
@@ -339,7 +342,6 @@ class _SelectPageState extends State<SelectPage>{
     );
   }
 }
-
 
 
 
