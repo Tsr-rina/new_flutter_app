@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 // import 'config/config.dart';
@@ -29,6 +32,10 @@ class _AddPostPageState extends State<AddPostPage> {
   // ニックネーム
   String nickname = "";
 
+  String _image = "";
+
+  final picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +59,6 @@ class _AddPostPageState extends State<AddPostPage> {
                   });
                 },
               ),
-              
               // 投稿メッセージ入力
               TextFormField(
                 decoration:  const InputDecoration(labelText: '投稿メッセージ'),
