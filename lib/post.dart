@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+// import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 // import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 // import 'config/config.dart';
@@ -12,6 +14,10 @@ import 'package:flutter/material.dart';
 // import 'browsing.dart';
 import 'repository.dart';
 // import 'home.dart';
+
+File  _image=File("");
+final picker = ImagePicker();
+
 
 
 // 投稿画面用Widget
@@ -32,9 +38,6 @@ class _AddPostPageState extends State<AddPostPage> {
   // ニックネーム
   String nickname = "";
 
-  String _image = "";
-
-  final picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +75,24 @@ class _AddPostPageState extends State<AddPostPage> {
                   });
                 },
               ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _image == null ? Text("No image selected"): Image.file(_image),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      FloatingActionButton(
+                        onPressed: _getImage,
+                        child: Icon(Icons.image),
+                      ),
+                    ],
+                  )
+                ],
+              ),
               const SizedBox(height: 8),
               Container(
                 width: double.infinity,
@@ -101,6 +122,12 @@ class _AddPostPageState extends State<AddPostPage> {
                       'm_name': m_name,
                       'text': messageText,
                     });
+                    FirebaseStorage storage = FirebaseStorage.instance;
+                    try {
+                      await storage.ref('${widget.user.email}_${m_name}.png').putFile(_image);
+                    } catch (e){
+                      // print(e);
+                    }
                     final snackBar = SnackBar(
                       content: const Text("投稿しました"),
                       action: SnackBarAction(
@@ -125,5 +152,16 @@ class _AddPostPageState extends State<AddPostPage> {
         ),
       ),
     );
+  }
+  Future _getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null){
+        _image = File(pickedFile.path);
+      }else{
+        // print("No image selected");
+      }
+    });
+    return _image;
   }
 }
