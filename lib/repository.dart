@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
+import 'dart:io';
 import 'main.dart';
 import 'post.dart';
 
@@ -79,7 +81,7 @@ class _RepositoryPageState extends State<RepositoryPage>{
                             onTap: () async {
                               await Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context){
-                                  return DetailPage(m_name,texts);
+                                  return DetailPage(widget.user ,m_name, texts);
                                 }),
                               );
                             },
@@ -119,7 +121,8 @@ class _RepositoryPageState extends State<RepositoryPage>{
 
 
 class DetailPage extends StatefulWidget {
-  DetailPage(this.m_name, this.texts);
+  DetailPage(this.user, this.m_name, this.texts);
+  final User user;
   final String m_name;
   final String texts;
   // DetailPage(this.m_name, this.texts);
@@ -129,6 +132,8 @@ class DetailPage extends StatefulWidget {
   _DetailPageState createState() => _DetailPageState();
 }
 class _DetailPageState extends State<DetailPage>{
+
+  Image _image;
 
   @override
   Widget build(BuildContext context){
@@ -156,7 +161,6 @@ class _DetailPageState extends State<DetailPage>{
                 ),
               ),
               // テキスト
-              
               Container(
                 margin: const EdgeInsets.only(top:20),
                 alignment: Alignment.centerLeft,
@@ -167,6 +171,12 @@ class _DetailPageState extends State<DetailPage>{
                   ),
                 ),
                 
+              ),
+              Container(
+
+                child: Row(
+                  
+                ),
               ),
               Container(
                 width: double.infinity,
@@ -182,5 +192,13 @@ class _DetailPageState extends State<DetailPage>{
         ),
       )
     );
+  }
+  Future _downloadFile(email, m_name) async {
+    final FirebaseStorage storage = FirebaseStorage.instance;  
+    Reference ref = storage.ref().child("${email}_${m_name}.png");
+    String imageUrl = await ref.getDownloadURL();
+    setState(() {
+      _image = Image.network(imageUrl);
+    });
   }
 }
