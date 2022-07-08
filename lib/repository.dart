@@ -177,10 +177,10 @@ class _DetailPageState extends State<DetailPage>{
                   ),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.only(top:20),
-                child: DownloadFile(widget.email, widget.m_name),
-              ),
+              // Container(
+              //   margin: const EdgeInsets.only(top:20),
+              //   child: DownloadFile(widget.email, widget.m_name),
+              // ),
               Container(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -196,12 +196,12 @@ class _DetailPageState extends State<DetailPage>{
       )
     );
   }
-  DownloadFile(email, m_name){
-  final FirebaseStorage storage = FirebaseStorage.instance;  
-  Reference ref = storage.ref().child("${email}_${m_name}.png");
-  String imageUrl = ref.getDownloadURL().toString();
-  setState(() {
-    final _image = Image.network(imageUrl);
-  });
-  }
+  // DownloadFile(email, m_name){
+  // final FirebaseStorage storage = FirebaseStorage.instance;  
+  // Reference ref = storage.ref().child("${email}_${m_name}.png");
+  // String imageUrl = ref.getDownloadURL().toString();
+  // setState(() {
+  //   final _image = Image.network(imageUrl);
+  // });
+  // }
 }

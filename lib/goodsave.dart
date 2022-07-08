@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -10,6 +12,7 @@ import 'repository.dart';
 import 'browsing_2.dart';
 // import 'home.dart';
 import 'main.dart';
+import 'post.dart';
 
 class GoodSave extends StatefulWidget {
   const GoodSave(this.user);
@@ -111,6 +114,18 @@ class _GoodSave extends State <GoodSave> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () async {
+          // 投稿画面に遷移
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (context){
+              // 引数からユーザ情報を渡す
+              return AddPostPage(widget.user);
+            }),
+          );
+        },
       ),
     );
   }
