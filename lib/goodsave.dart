@@ -89,7 +89,8 @@ class _GoodSave extends State <GoodSave> {
                                 MaterialPageRoute(builder: (context){
                                   m_name = document["m_name"];
                                   texts = document["text"];
-                                  return DetailPage(m_name,texts);
+                                  final email = widget.user.email;
+                                  return DetailPage(email, m_name, texts);
                                 }),
                               );
                             },
