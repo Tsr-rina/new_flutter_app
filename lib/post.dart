@@ -42,17 +42,17 @@ class _AddPostPageState extends State<AddPostPage> {
   File _image = File("");
 
 
-Future GetImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null){
-        File _image = File(pickedFile.path);
-      }else{
-        // print("No image selected");
-      }
-    });
+  // Future GetImage() async {
+  //     final pickedFile = await picker.getImage(source: ImageSource.gallery);
+  //     setState(() {
+  //       if (pickedFile != null){
+  //         File _image = File(pickedFile.path);
+  //       }else{
+  //         // print("No image selected");
+  //       }
+  //     });
 
-}
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,24 +90,24 @@ Future GetImage() async {
                   });
                 },
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _image == null ? const Text("No image selected"): Image.file(_image),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      FloatingActionButton(
-                        onPressed: GetImage,
-                        child: Icon(Icons.image),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+              // Column(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     _image == null ? const Text("No image selected"): Image.file(_image),
+              //     const SizedBox(
+              //       height: 30,
+              //     ),
+              //     Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //       children: [
+              //         FloatingActionButton(
+              //           onPressed: GetImage,
+              //           child: Icon(Icons.image),
+              //         ),
+              //       ],
+              //     )
+              //   ],
+              // ),
               const SizedBox(height: 8),
               Container(
                 width: double.infinity,
@@ -137,15 +137,15 @@ Future GetImage() async {
                       'm_name': m_name,
                       'text': messageText,
                     });
-                    GetImage();
-                    // final pickerFile = ImagePicker().getImage(source: ImageSource.gallery);
-                    // File file = File(pickerFile.path);
-                    FirebaseStorage storage = FirebaseStorage.instance;
-                    try {
-                      await storage.ref('${widget.user.email}_${m_name}.png').putFile(_image);
-                    } catch (e){
-                      // print(e);
-                    }
+                    // GetImage();
+                    // // final pickerFile = ImagePicker().getImage(source: ImageSource.gallery);
+                    // // File file = File(pickerFile.path);
+                    // FirebaseStorage storage = FirebaseStorage.instance;
+                    // try {
+                    //   await storage.ref('${widget.user.email}_${m_name}.png').putFile(_image);
+                    // } catch (e){
+                    //   // print(e);
+                    // }
                     final snackBar = SnackBar(
                       content: const Text("投稿しました"),
                       action: SnackBarAction(

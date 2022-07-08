@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 // import 'profile.dart';
 import 'repository.dart';
 import 'post.dart';
+import 'goodsave.dart';
 
 final _saved = {};
 
@@ -111,25 +114,26 @@ class _Browsing extends State <Browsing> {
                                 // _saved[document['m_name']] += 1;
                                 setState(() {
                                   if (already){
-                                    FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(widget.user.email)
-                                    .collection('favorite')
-                                    .doc(document["m_name"])
-                                    .delete();
+                                    // FirebaseFirestore.instance
+                                    // .collection('users')
+                                    // .doc(widget.user.email)
+                                    // .collection('favorite')
+                                    // .doc(document["m_name"])
+                                    // .delete();
                                     _saved.remove(document["m_name"]);
                                   } else {
-                                    FirebaseFirestore.instance
-                                    .collection('user') //コレクションID指定
-                                    .doc(widget.user.email) //ドキュメントIDを指定
-                                    .collection('favorite')
-                                    .doc(document["m_name"])
-                                    .set({
-                                      'm_name': document['m_name'],
-                                      'user': document['user'],
-                                      'text': document['text'],
-                                    });
-                                    _saved[document["m_name"]]=0;
+                                    // FirebaseFirestore.instance
+                                    // .collection('user') //コレクションID指定
+                                    // .doc(widget.user.email) //ドキュメントIDを指定
+                                    // .collection('favorite')
+                                    // .doc(document["m_name"])
+                                    // .set({
+                                    //   'm_name': document['m_name'],
+                                    //   'user': document['user'],
+                                    //   'text': document['text'],
+                                    // });
+                                    _saved[document["m_name"]]=document["text"];
+                                    // _saved.addAll(document["m_name"]);
                                   }
                                 });
                               },
@@ -174,11 +178,39 @@ class _Browsing extends State <Browsing> {
           await Navigator.of(context).push(
             MaterialPageRoute(builder: (context){
               // 引数からユーザ情報を渡す
-              return AddPostPage(widget.user);
+              // return AddPostPage(widget.user);
+              return GoodSave(widget.user);
+
             }),
           );
         },
       ),
+    );
+  }
+  void _pushSaved(){
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: ((context) {
+          final tiles = _saved.map((key, value) {
+            return ListTile(
+              title: Text(m_name),
+            );
+          }).toString();
+          final divided = tiles.isNotEmpty ? ListTile.divideTiles(
+            context: context,
+            tiles: tiles,
+
+          ).toList()
+          : <Widget>[];
+
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("お気に入り"),
+            ),
+            body: ListView(children:divided),
+          );
+        }),
+      )
     );
   }
 }
