@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -80,7 +78,7 @@ class _Browsing extends State <Browsing> {
                         .collection('favorite')
                         .snapshots().listen((QuerySnapshot snapshot) {
                           snapshot.docs.forEach((doc) {
-                            _saved[doc.get("m_name")]=0;
+                            // _saved[doc.get("m_name")]=0;
                           });
                         });
                         // ここに↓いれるとDetailPageに意図した値が届かない
@@ -103,11 +101,11 @@ class _Browsing extends State <Browsing> {
                             trailing: IconButton(
                               icon: Icon(
 
-                                already == true ? Icons.star : Icons.star_border,
-                                color: already == true ? Colors.yellow[600]: Colors.black45,
+                                already ? Icons.star : Icons.star_border,
+                                color: already ? Colors.yellow[600]: Colors.black45,
                                 // judge ? Icons.star : Icons.star_border,
                                 // color: judge ? Colors.yellow[600]: null,
-                                // semanticLabel: judge ? 'Remove from saved': 'save',
+                                semanticLabel: already ? 'Remove from saved': 'save',
                                 ),
                               onPressed: (){
                                 // GoodSave(widget.user);
@@ -179,7 +177,7 @@ class _Browsing extends State <Browsing> {
             MaterialPageRoute(builder: (context){
               // 引数からユーザ情報を渡す
               // return AddPostPage(widget.user);
-              return GoodSave(widget.user);
+              return ShowStar(_saved);
 
             }),
           );
@@ -187,30 +185,51 @@ class _Browsing extends State <Browsing> {
       ),
     );
   }
-  void _pushSaved(){
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: ((context) {
-          final tiles = _saved.map((key, value) {
-            return ListTile(
-              title: Text(m_name),
-            );
-          }).toString();
-          final divided = tiles.isNotEmpty ? ListTile.divideTiles(
-            context: context,
-            tiles: tiles,
+  // void _pushSaved(){
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute<void>(
+  //       builder: (context) {
+  //         final tiles = _saved.map((key, value){
+  //           return ListTile(
+  //           );
+  //         });
+  //         final divided = tiles.isNotEmpty ? ListTile.divideTiles(
+  //           context: context,
+  //           tiles: tiles,
 
-          ).toList()
-          : <Widget>[];
+  //         ).toList()
+  //         : <Widget>[];
 
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text("お気に入り"),
-            ),
-            body: ListView(children:divided),
-          );
-        }),
-      )
-    );
-  }
+  //         return Scaffold(
+  //           appBar: AppBar(
+  //             title: const Text("お気に入り"),
+  //           ),
+  //           body: ListView(children:divided),
+  //         );
+  //       }
+  //     ),
+      
+  //   );
+  // }
+}
+Widget ShowStar(_saved){
+  return Scaffold(
+    appBar: AppBar(
+      title: Text("お気に入り"),
+    ),
+    body: ListView.builder(
+      itemCount: _saved.length,
+      itemBuilder: (BuildContext context, int index){
+        final key = _saved.keys.elementAt(index);
+        final values = _saved.values.elementAt(index);
+        return Container(
+          child: ListTile(
+            title: Text(_saved[key]),
+            subtitle: Text(_saved[key]),
+            // subtitle: Text(_saved[values]),
+          ),
+        );
+      },
+    ),
+  );
 }
