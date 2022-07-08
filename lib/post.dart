@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:path_provider/path_provider.dart';
 // import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'repository.dart';
 // import 'home.dart';
 
-File  _image=File("");
+
 final picker = ImagePicker();
 
 
@@ -37,7 +39,20 @@ class _AddPostPageState extends State<AddPostPage> {
   String m_name = "";
   // ニックネーム
   String nickname = "";
+  File _image = File("");
 
+
+Future GetImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null){
+        File _image = File(pickedFile.path);
+      }else{
+        // print("No image selected");
+      }
+    });
+
+}
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +93,7 @@ class _AddPostPageState extends State<AddPostPage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _image == null ? Text("No image selected"): Image.file(_image),
+                  _image == null ? const Text("No image selected"): Image.file(_image),
                   const SizedBox(
                     height: 30,
                   ),
@@ -86,7 +101,7 @@ class _AddPostPageState extends State<AddPostPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       FloatingActionButton(
-                        onPressed: _getImage,
+                        onPressed: GetImage,
                         child: Icon(Icons.image),
                       ),
                     ],
@@ -122,6 +137,9 @@ class _AddPostPageState extends State<AddPostPage> {
                       'm_name': m_name,
                       'text': messageText,
                     });
+                    GetImage();
+                    // final pickerFile = ImagePicker().getImage(source: ImageSource.gallery);
+                    // File file = File(pickerFile.path);
                     FirebaseStorage storage = FirebaseStorage.instance;
                     try {
                       await storage.ref('${widget.user.email}_${m_name}.png').putFile(_image);
@@ -152,16 +170,5 @@ class _AddPostPageState extends State<AddPostPage> {
         ),
       ),
     );
-  }
-  Future _getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null){
-        _image = File(pickedFile.path);
-      }else{
-        // print("No image selected");
-      }
-    });
-    return _image;
   }
 }

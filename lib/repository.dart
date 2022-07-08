@@ -3,9 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'main.dart';
 import 'post.dart';
+
+
+File  _image=File("");
+// final picker = ImagePicker();
 
 // リポジトリ用画面
 class RepositoryPage extends StatefulWidget {
@@ -81,7 +86,8 @@ class _RepositoryPageState extends State<RepositoryPage>{
                             onTap: () async {
                               await Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context){
-                                  return DetailPage(widget.user ,m_name, texts);
+                                  final email = widget.user.email;
+                                  return DetailPage(email, m_name, texts);
                                 }),
                               );
                             },
@@ -121,8 +127,8 @@ class _RepositoryPageState extends State<RepositoryPage>{
 
 
 class DetailPage extends StatefulWidget {
-  DetailPage(this.user, this.m_name, this.texts);
-  final User user;
+  DetailPage(this.email, this.m_name, this.texts);
+  final  email;
   final String m_name;
   final String texts;
   // DetailPage(this.m_name, this.texts);
@@ -132,9 +138,9 @@ class DetailPage extends StatefulWidget {
   _DetailPageState createState() => _DetailPageState();
 }
 class _DetailPageState extends State<DetailPage>{
+  
 
-  Image _image;
-
+  
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -170,13 +176,10 @@ class _DetailPageState extends State<DetailPage>{
                     fontSize: 18
                   ),
                 ),
-                
               ),
               Container(
-
-                child: Row(
-                  
-                ),
+                margin: const EdgeInsets.only(top:20),
+                child: DownloadFile(widget.email, widget.m_name),
               ),
               Container(
                 width: double.infinity,
@@ -193,12 +196,12 @@ class _DetailPageState extends State<DetailPage>{
       )
     );
   }
-  Future _downloadFile(email, m_name) async {
-    final FirebaseStorage storage = FirebaseStorage.instance;  
-    Reference ref = storage.ref().child("${email}_${m_name}.png");
-    String imageUrl = await ref.getDownloadURL();
-    setState(() {
-      _image = Image.network(imageUrl);
-    });
+  DownloadFile(email, m_name){
+  final FirebaseStorage storage = FirebaseStorage.instance;  
+  Reference ref = storage.ref().child("${email}_${m_name}.png");
+  String imageUrl = ref.getDownloadURL().toString();
+  setState(() {
+    final _image = Image.network(imageUrl);
+  });
   }
 }
