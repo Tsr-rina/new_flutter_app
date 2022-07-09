@@ -52,7 +52,6 @@ class _RepositoryPageState extends State<RepositoryPage>{
             // 非同期処理の結果をもとにWidget
             child: StreamBuilder<QuerySnapshot>(
               // 投稿メッセージ一覧を取得(非同期処理)
-              // 投稿日時でソート
               stream: FirebaseFirestore.instance
               .collection('posts')
               .snapshots(),
@@ -63,9 +62,9 @@ class _RepositoryPageState extends State<RepositoryPage>{
                   // 取得した投稿メッセージ一覧を元にリスト表示
                   return ListView(
                     children: documents.map((document) {                  
-                      if(document.id == widget.user.email){
+                      if(document["email"] == widget.user.email){
                         m_name = document['m_name'];
-                        texts = document['text'];  
+                        texts = document['text'];
                         return Card(
                           child: ListTile(
                             title: Text(document['m_name']),
