@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:new_flutter_app/goodsave.dart';
 import 'package:new_flutter_app/myauth.dart';
 import 'config/config.dart';
 import 'firebase_options.dart';
@@ -243,8 +244,8 @@ class _LoginPageState extends State<LoginPage>{
                       // ホーム画面に遷移
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context){
-                          // return ChatPage(result.user!);
-                          return HomePage(result.user!);
+                          // return HomePage(result.user!);
+                          return SelectPage(result.user!);
                         }),
                       );
                     } catch (e){
@@ -301,28 +302,30 @@ class SelectPage extends StatefulWidget {
 class _SelectPageState extends State<SelectPage>{
 
 
-
-  static const  _screens=[
-    // HomePage(widget.user),
-    // Browsing(widget.user),
-  ];
-  int _selectedIndex = 0;
-  void _onItemTapped(int index){
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
   @override
   Widget build(BuildContext context){
 
+    final  _screens=[
+      HomePage(widget.user),
+      GoodSave(widget.user),
+    ];
+
+    int _selectedIndex = 0;
+    void _onItemTapped(int index){
+      setState(() {
+        _selectedIndex = index;
+
+      });
+
+    }
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: _screens.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
-          BottomNavigationBarItem(icon: Icon(Icons.picture_in_picture), label: "browsing"),
+          BottomNavigationBarItem(icon: Icon(Icons.star), label: "Star"),
         ],
         type: BottomNavigationBarType.fixed,
       ),
@@ -341,6 +344,15 @@ class _SelectPageState extends State<SelectPage>{
       ),
     );
   }
+  // _screens(index){
+  //   final sc = [HomePage(widget.user), GoodSave(widget.user)];
+  //   // if (index == 0){
+  //   //   return HomePage(widget.user);
+  //   // } else if(index == 1){
+  //   //   return GoodSave(widget.user);      
+  //   // }
+  //   return sc[index];
+  // }
 }
 
 
