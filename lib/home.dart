@@ -15,6 +15,8 @@ import 'post.dart';
 import 'browsing_2.dart';
 import 'goodsave.dart';
 
+final _saved = {};
+
 
 class HomePage extends StatefulWidget {
   const HomePage(this.user);

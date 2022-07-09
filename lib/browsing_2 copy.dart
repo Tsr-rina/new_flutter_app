@@ -95,65 +95,8 @@ class _Browsing extends State <Browsing> {
                         // }
                         // final already = _saved.containsKey(document["m_name"]);
                         final already = _saved.containsKey(document["user"]);
-                        return Card(
-                          child: ListTile(
-                            title: Text(document['m_name']),
-                            subtitle: Text(document['user']),
-                            trailing: IconButton(
-                              icon: Icon(
-
-                                already ? Icons.star : Icons.star_border,
-                                color: already ? Colors.yellow[600]: Colors.black45,
-                                // judge ? Icons.star : Icons.star_border,
-                                // color: judge ? Colors.yellow[600]: null,
-                                semanticLabel: already ? 'Remove from saved': 'save',
-                                ),
-                              onPressed: () async{
-                                // GoodSave(widget.user);
-                                // _saved[document['m_name']] += 1;
-                                setState(() {
-                                  if (already){
-                                    FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(widget.user.email)
-                                    .collection('favorite')
-                                    .doc(document["m_name"])
-                                    .delete();
-                                    _saved.remove(document["user"]);
-                                  } else {
-                                    FirebaseFirestore.instance
-                                    .collection('users') //コレクションID指定
-                                    .doc(widget.user.email) //ドキュメントIDを指定
-                                    .collection('favorite')
-                                    .doc(document["m_name"])
-                                    .set({
-                                      'm_name': document['m_name'],
-                                      'user': document['user'],
-                                      'text': document['text'],
-                                    });
-                                    _saved[document["user"]]=document["m_name"];
-                                    // _saved.addAll(document["m_name"]);
-                                  }
-                                });
-                              },
-                            ),
-                            onTap: () async {
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context){
-                                  m_name = document["m_name"];
-                                  texts = document["text"];
-                                  final email = widget.user.email;
-                                  return DetailPage(email, m_name,texts);
-                                }),
-                              );
-                            },
-                          ),
-                        );
                       }
-                      else {
-                        return const Text("");
-                      }
-                    }).toList(),
+                    })
                   );                  
                 }
                 // データが読み込み中の場合
@@ -186,32 +129,6 @@ class _Browsing extends State <Browsing> {
       ),
     );
   }
-  // void _pushSaved(){
-  //   Navigator.of(context).push(
-  //     MaterialPageRoute<void>(
-  //       builder: (context) {
-  //         final tiles = _saved.map((key, value){
-  //           return ListTile(
-  //           );
-  //         });
-  //         final divided = tiles.isNotEmpty ? ListTile.divideTiles(
-  //           context: context,
-  //           tiles: tiles,
-
-  //         ).toList()
-  //         : <Widget>[];
-
-  //         return Scaffold(
-  //           appBar: AppBar(
-  //             title: const Text("お気に入り"),
-  //           ),
-  //           body: ListView(children:divided),
-  //         );
-  //       }
-  //     ),
-      
-  //   );
-  // }
 }
 Widget ShowStar(_saved){
   return Scaffold(
