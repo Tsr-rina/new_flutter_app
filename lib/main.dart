@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context){
     // アプリ全体の管理
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'ClothHub',
       theme: ThemeData(
         primarySwatch: Colors.lightGreen
@@ -301,6 +302,14 @@ class SelectPage extends StatefulWidget {
 }
 class _SelectPageState extends State<SelectPage>{
 
+    int _selectedIndex = 0;
+    void _onItemTapped(int index){
+      setState(() {
+        _selectedIndex = index;
+
+      });
+
+    }
 
   @override
   Widget build(BuildContext context){
@@ -310,14 +319,6 @@ class _SelectPageState extends State<SelectPage>{
       GoodSave(widget.user),
     ];
 
-    int _selectedIndex = 0;
-    void _onItemTapped(int index){
-      setState(() {
-        _selectedIndex = index;
-
-      });
-
-    }
     return Scaffold(
       body: _screens.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(

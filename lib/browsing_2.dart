@@ -93,7 +93,6 @@ class _Browsing extends State <Browsing> {
                         // }else{
                         //   star = true;
                         // }
-                        // final already = _saved.containsKey(document["m_name"]);
                         final already = _saved.containsKey(document["user"]);
                         return Card(
                           child: ListTile(
