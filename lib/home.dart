@@ -14,6 +14,7 @@ import 'repository.dart';
 import 'post.dart';
 import 'browsing_2.dart';
 import 'goodsave.dart';
+import 'camera.dart';
 
 final _saved = {};
 
@@ -28,7 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>{
     
 
-  final menu_list = ["Star","Post", "Repository", "Browsing"];
+  final menu_list = ["Star","Post", "Repository", "Browsing", "Camera"];
 
 
   @override
@@ -75,6 +76,9 @@ class _HomePageState extends State<HomePage>{
                           }
                           else if (index==2){
                             return RepositoryPage(widget.user);
+                          }
+                          else if (index==3){
+                            return CameraView(widget.user);
                           }
                           else{
                             return Browsing(widget.user);
