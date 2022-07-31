@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+
 // ProfileWidget
 class CameraView extends StatelessWidget {
+
   CameraView(this.user);
   // ユーザ情報
   final User user; 
@@ -19,6 +21,7 @@ class CameraView extends StatelessWidget {
             // child: Text("ログイン情報:${user.email}"),
             child: const Text("ここにログイン情報"),
           ),
+          
         ],
       ),
     );
