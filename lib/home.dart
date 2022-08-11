@@ -78,10 +78,10 @@ class _HomePageState extends State<HomePage>{
                             return RepositoryPage(widget.user);
                           }
                           else if (index==3){
-                            return CameraView(widget.user);
+                            return Browsing(widget.user);
                           }
                           else{
-                            return Browsing(widget.user);
+                            return Camera(widget.user);
                           }
 
                         }),
