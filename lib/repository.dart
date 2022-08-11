@@ -63,8 +63,8 @@ class _RepositoryPageState extends State<RepositoryPage>{
                   return ListView(
                     children: documents.map((document) {                  
                       if(document["email"] == widget.user.email){
-                        m_name = document['m_name'];
-                        texts = document['text'];
+                        // m_name = document['m_name'];
+                        // texts = document['text'];
                         return Card(
                           child: ListTile(
                             title: Text(document['m_name']),
@@ -86,6 +86,8 @@ class _RepositoryPageState extends State<RepositoryPage>{
                               await Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context){
                                   final email = widget.user.email;
+                                  m_name = document['m_name'];
+                                  texts = document['text'];
                                   return DetailPage(email, m_name, texts);
                                 }),
                               );

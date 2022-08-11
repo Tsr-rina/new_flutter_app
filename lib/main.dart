@@ -13,6 +13,7 @@ import 'browsing_2.dart';
 import 'home.dart';
 import 'post.dart';
 import 'package:camera/camera.dart';
+import 'cameraview.dart';
 
 
 

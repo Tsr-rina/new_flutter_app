@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -78,18 +80,23 @@ class _AddPostPageState extends State<AddPostPage> {
                 },
               ),
               // 投稿メッセージ入力
-              TextFormField(
-                decoration:  const InputDecoration(labelText: '投稿メッセージ'),
-                // 複数行のテキスト入力
-                keyboardType: TextInputType.multiline,
-                // 最大3行
-                maxLines: 20,
-                onChanged: (String value){
-                  setState(() {
-                    messageText = value;
-                  });
-                },
+              Flexible(
+                child: Container(
+                  child: TextFormField(
+                    decoration:  const InputDecoration(labelText: '投稿メッセージ'),
+                  // 複数行のテキスト入力
+                  keyboardType: TextInputType.multiline,
+                  // 最大3行
+                  maxLines: 20,
+                  onChanged: (String value){
+                    setState(() {
+                      messageText = value;
+                    });
+                  },
               ),
+                )
+              ),
+
               // Column(
               //   mainAxisAlignment: MainAxisAlignment.center,
               //   children: [
