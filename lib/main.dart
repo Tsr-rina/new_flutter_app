@@ -31,12 +31,6 @@ Future<void> main() async{
     //   projectId: configurations.projectId
     // )
   );
-  // デバイスで使用可能なカメラのリストを取得
-  final cameras = await availableCameras();
-
-  final firstCamera = cameras.first;
-
-  print(firstCamera);
   runApp(const MyApp());
 }
 
