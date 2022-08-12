@@ -15,6 +15,7 @@ import 'post.dart';
 import 'browsing_2.dart';
 import 'goodsave.dart';
 import 'camera.dart';
+import 'image_reader.dart';
 
 final _saved = {};
 
@@ -29,7 +30,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>{
     
 
-  final menu_list = ["Star","Post", "Repository", "Browsing", "Camera"];
+  final menu_list = ["Star","Post", "Repository", "Browsing", "Camera", "Image"];
 
 
   @override
@@ -80,8 +81,10 @@ class _HomePageState extends State<HomePage>{
                           else if (index==3){
                             return Browsing(widget.user);
                           }
-                          else{
+                          else if(index==4){
                             return Camera(widget.user);
+                          }else {
+                            return Image_Reader(widget.user);
                           }
 
                         }),
