@@ -1,8 +1,10 @@
 import 'dart:ffi';
-
+import 'dart:html';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 
 class CameraView extends StatefulWidget {
@@ -13,6 +15,20 @@ class CameraView extends StatefulWidget {
 }
 
 class _CameraView extends State<CameraView>{
+
+  // File _image = File("");
+
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        // _image = File(pickedFile.path);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context){
@@ -41,45 +57,4 @@ class _CameraView extends State<CameraView>{
       ),
     );
   }
-}
-
-
-class TakePictureScreen extends StatefulWidget {
-  TakePictureScreen({Key? key, this.camera}):super(key:key);
-
-  final CameraDescription = camera;
-
-  @override
-  _TakePictureScreen createState() => _TakePictureScreen();
-
-}
-
-class _TakePictureScreen extends State<TakePictureScreen>{
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
-
-  @override
-  Void initState(){
-    super.initState();
-
-    _controller = CameraController(
-      widget.camera, 
-      ResolutionPreset.medium,
-    );
-
-    _initializeControllerFuture = _controller.initialize();
-  }
-
-  @override
-  void dispose(){
-    _controller.dispose();
-    super.dispose();
-  }
-  
-
-  @override
-  Widget build(BuildContext context){
-    return SizedBox();
-  }
-
 }
