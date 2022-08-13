@@ -46,4 +46,4 @@ app.*.map.json
 /android/app/release
 
 lib/config
-/Runner/GoogleService-Info.plist
+/Runner/GoogleService-Info.plist 
