@@ -20,13 +20,33 @@ class Image_Reader extends StatefulWidget {
 }
 
 class _Image_ReaderState extends State<Image_Reader>{
+
+  File? image;
+  String imagePath = "";
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> selectImage() async {
+    XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) return;
+    setState(() {
+      image = File(pickedImage.path);
+    });
+  }
+
+  Future<void> uploadImage() async {
+    String path = image!.path.substring(image!.path.lastIndexOf('/')+1);
+    final ref = FirebaseStorage.instance.ref(path);
+    final storedImage = await ref.putFile(image!);
+    imagePath = await storedImage.ref.getDownloadURL();
+  }
+
   String m_name = "";
   String texts = "";
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Repository"),
+        title: const Text("Image_Reader"),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.logout),
@@ -44,25 +64,48 @@ class _Image_ReaderState extends State<Image_Reader>{
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Center(
-            child: Text("画像を扱うページです"),
-          )
-        ],
+      
+      body:Column(
+          children: [
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: () async{
+                    await selectImage();
+                    uploadImage();
+                  },
+                  child: const Text("画像を選択"),
+                ),
+
+              ),
+            ),
+            const SizedBox(height: 30,),
+            image == null
+              ? const SizedBox()
+              : SizedBox(
+                width:200,
+                height:200,
+                child:Image.file(image!, fit: BoxFit.cover)
+              ), 
+            const SizedBox(height: 150,)
+          ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () async {
-          // 投稿画面に遷移
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context){
-              // 引数からユーザ情報を渡す
-              return AddPostPage(widget.user);
-            }),
-          );
-        },
-      ),
+
+
+
+      // floatingActionButton: FloatingActionButton(
+      //   child: const Icon(Icons.add),
+      //   onPressed: () async {
+      //     // 投稿画面に遷移
+      //     await Navigator.of(context).push(
+      //       MaterialPageRoute(builder: (context){
+      //         // 引数からユーザ情報を渡す
+      //         return AddPostPage(widget.user);
+      //       }),
+      //     );
+      //   },
+      // ),
     );
   }
 }
